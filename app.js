@@ -1,15 +1,15 @@
 const express = require('express');
 const router = require('./routes');
 const morgan = require('morgan');
-
+const { port, environment } = require('./config/index');
 const app = express();
 
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
 app.use('/', router);
 
-const inDevelopment = process.env.NODE_ENV === "development";
-const inProduction = process.env.NODE_ENV === 'production';
+const inDevelopment = environment === "development";
+const inProduction = environment === 'production';
 
 app.use((req, res, next) => {
     let error = new Error("The requested page couldn't be found.");
