@@ -21,6 +21,11 @@ const asyncHandler = (handler) => {
 router.get('/parks', asyncHandler(async (req, res) => {
     let parks = await db.Park.findAll({ order: [['parkName', 'ASC']] });
     res.render('park-list', { title: 'Parks', parks })
+}));
+
+router.get('/park/:id(\\d+)', asyncHandler(async (req, res) => {
+    let park = await db.Park.findByPk(req.params.id);
+    res.render('park-detail', { title: 'Park Detail', park });
 }))
 
 module.exports = router;
