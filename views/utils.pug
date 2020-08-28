@@ -1,4 +1,15 @@
-mixin textField(labelText, fieldName, fieldValue)
+mixin textField(labelText, fieldName, fieldValue, placeholder)
   div
-    label(for=fieldName) labelText
-    input(id=fieldName name=fieldName value=fieldValue)
+    label(for=fieldName)=labelText
+    if placeholder
+      input(id=fieldName name=fieldName value=fieldValue type="text" placeholder=placeholder)
+    else
+      input(id=fieldName name=fieldName value=fieldValue type="text")
+
+mixin displayErrors(errors)
+  if errors.length
+    div(class="alert alert-danger" role="alert")
+      p The following error(s) occurred:
+      ul
+        each error in errors
+          li=error

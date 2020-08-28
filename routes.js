@@ -33,16 +33,16 @@ router.get('/park/:id(\\d+)', asyncHandler(async (req, res) => {
 }))
 
 router.get('/park/add', csrfProtection, (req, res) => {
-    // let newPark = db.Park.build();
-    res.render('park-add', { title: 'Add Park', csrfToken: req.csrfToken() });
+    let park = db.Park.build();
+    res.render('park-add', { title: 'Add Park', csrfToken: req.csrfToken(), errors:[], park });
 })
 
 router.post('/park/add', csrfProtection, [
     check('parkName').exists({ checkFalsy: true }).withMessage("Please provide a value for Park Name").isLength({max: 255}).withMessage("Park Name must not be more than 255 characters long"),
     check('city').exists({ checkFalsy: true }).withMessage("Please provide a value for City").isLength({max: 100}).withMessage("City must not be more than 100 characters long"),
     check('provinceState').exists({ checkFalsy: true }).withMessage("Please provide a value for Province/State").isLength({max: 100}).withMessage("Province/State must not be more than 100 characters long"),
-    check('country').exists({ checkFalsy: true }).withMessage('Please provide a value for Country').sLength({max: 100}).withMessage("Country must not be more than 100 characters long"),
-    check('opened').isDate().withMessage('Please provide a valid date for Opened').exists({ checkFalsy: true }).withMessage('Please Provide a value for Opened'),
+    check('country').exists({ checkFalsy: true }).withMessage('Please provide a value for Country').isLength({max: 100}).withMessage("Country must not be more than 100 characters long"),
+    check('opened').isDate().withMessage('Please provide a valid date for Opened').exists({ checkFalsy: true }).withMessage('Please provide a value for Opened'),
     check('size').exists({ checkFalsy: true }).withMessage('Please provide a value for Size').isLength({max: 100}).withMessage('Size must not be more than 100 characters long'),
     check('description').exists({ checkFalsy: true }).withMessage('Please provide a value for Description')
 ],

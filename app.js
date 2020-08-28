@@ -37,7 +37,7 @@ app.use((error, req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-    if (error.status) res.status = error.status;
+    if (error.status) res.status(error.status);
     else res.status(500);
     if (!inProduction) res.render('error', { title: "Server Error", message: error.message, stack: error.stack });
     else res.render('error', { title: "Server Error", message: null, stack: null });
