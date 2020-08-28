@@ -37,7 +37,7 @@ router.get('/park/add', csrfProtection, (req, res) => {
     res.render('park-add', { title: 'Add Park', csrfToken: req.csrfToken(), errors:[], park });
 })
 
-router.post('/park/add', csrfProtection, [
+const parkValidations = [
     check('parkName').exists({ checkFalsy: true }).withMessage("Please provide a value for Park Name").isLength({max: 255}).withMessage("Park Name must not be more than 255 characters long"),
     check('city').exists({ checkFalsy: true }).withMessage("Please provide a value for City").isLength({max: 100}).withMessage("City must not be more than 100 characters long"),
     check('provinceState').exists({ checkFalsy: true }).withMessage("Please provide a value for Province/State").isLength({max: 100}).withMessage("Province/State must not be more than 100 characters long"),
@@ -45,19 +45,39 @@ router.post('/park/add', csrfProtection, [
     check('opened').isDate().withMessage('Please provide a valid date for Opened').exists({ checkFalsy: true }).withMessage('Please provide a value for Opened'),
     check('size').exists({ checkFalsy: true }).withMessage('Please provide a value for Size').isLength({max: 100}).withMessage('Size must not be more than 100 characters long'),
     check('description').exists({ checkFalsy: true }).withMessage('Please provide a value for Description')
-],
-asyncHandler(async(req, res) => {
+]
+
+router.post('/park/add', csrfProtection, parkValidations, asyncHandler(async(req, res) => {
     const { parkName, city, provinceState, country, opened, size, description } = req.body;
-    const validatorErrors = validationResult(req)
+    const validatorErrors = validationResult(req);
     let park = db.Park.build({ parkName, city, provinceState, country, opened, size, description });
     if (validatorErrors.isEmpty()) {
         await park.save();
         res.redirect('/')
     } else {
         const errors = validatorErrors.array().map(error => error.msg)
-        res.render('park-add', { title: 'Add Park', park, errors, csrfToken: req.csrfToken() })
+        res.render('park-add', { title: 'Add Park', park, errors, csrfToken: req.csrfToken() });
     }
 
-}))
+}));
+
+router.get('/park/edit/:id(\\d+)', csrfProtection, asyncHandler(async(req, res) => {
+    const park = await db.Park.findByPk(req.params.id);
+    res.render('park-edit', { title: 'Edit Park', park, errors:[], csrfToken: req.csrfToken() })
+}));
+
+router.post('/park/edit/:id(\\d+)', parkValidations, csrfProtection, asyncHandler(async (req, res) => {
+    const park = await db.Park.findByPk(req.params.id);
+    const { parkName, city, provinceState, country, opened, size, description } = req.body;
+    const validatorErrors = validationResult(req);
+    const newPark = { parkName, city, provinceState, country, opened, size, description };
+    if (validatorErrors.isEmpty()) {
+        await park.update(newPark);
+        res.redirect('/');
+    } else {
+        const errors = validatorErrors.array().map(error => error.msg)
+        res.render('park-edit', { title: 'Edit Park', park: { ...newPark, id: park.id }, errors, csrfToken: req.csrfToken() });
+    }
+}));
 
 module.exports = router;
