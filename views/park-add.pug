@@ -1,0 +1,7 @@
+extends layout.pug
+
+block content
+  form(action='/park/add' method='post')
+    include park-form-fields.pug
+    button(type='submit')
+    a(href='/') Cancel

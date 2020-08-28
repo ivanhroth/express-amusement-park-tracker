@@ -1,11 +1,15 @@
 const express = require('express');
 const router = require('./routes');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+
 const { port, environment } = require('./config/index');
 const app = express();
 
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 app.use('/', router);
 
 const inDevelopment = environment === "development";

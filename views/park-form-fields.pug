@@ -1,0 +1,10 @@
+include utils.pug
+
+input(type=hidden name='_csrf' value=csrfToken)
++textField('Park Name', 'parkName', park.parkName)
++textFeild('City', 'city', park.city)
++textFeild('Province/State', 'provinceState', park.provinceState)
++textFeild('Country', 'country', park.country)
++textField('Opened', 'opened', park.opened)
++textFeild('Size', 'size', park.size)
++textFeild('Description', 'description', park.description)
